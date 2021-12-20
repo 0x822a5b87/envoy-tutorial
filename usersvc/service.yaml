@@ -5,7 +5,6 @@ metadata:
   labels:
     service: usersvc
   name: usersvc
-  namespace: envoy-tutorial
 spec:
   type: ClusterIP
   ports:

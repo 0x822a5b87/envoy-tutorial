@@ -1,11 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   creationTimestamp: null
   name: postgres
-  namespace: envoy-tutorial
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      service: postgres
   strategy: {}
   template:
     metadata:
@@ -15,7 +17,10 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:9.6
+        image: postgres:9.6.24-stretch
+        env:
+        - name: POSTGRES_PASSWORD
+          value : "trust"
         resources: {}
       restartPolicy: Always
 status: {}

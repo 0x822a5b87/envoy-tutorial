@@ -3,7 +3,6 @@
 import logging
 import os
 import socket
-import time
 import uuid
 
 import pg8000
@@ -18,7 +17,7 @@ MyResolvedName = socket.gethostbyname(socket.gethostname())
 
 logging.basicConfig(
     filename=logPath,
-    level=logging.DEBUG, # if appDebug else logging.INFO,
+    level=logging.DEBUG,  # if appDebug else logging.INFO,
     format="%(asctime)s esteps-user 0.0.1 %(levelname)s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S"
 )
@@ -35,6 +34,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(256) NOT NULL
 )
 '''
+
 
 class RichStatus (object):
     def __init__(self, ok, **kwargs):
@@ -61,7 +61,7 @@ class RichStatus (object):
         return "<RichStatus %s%s>" % ("OK" if self else "BAD", astr)
 
     def toDict(self):
-        d = { 'ok': self.ok }
+        d = {'ok': self.ok}
 
         for key in self.info.keys():
             d[key] = self.info[key]
@@ -76,6 +76,7 @@ class RichStatus (object):
     @classmethod
     def OK(self, **kwargs):
         return RichStatus(True, **kwargs)
+
 
 def get_db(database):
     db_host = "postgres"
@@ -154,6 +155,7 @@ def handle_user_get(req, username):
     except pg8000.Error as e:
         return RichStatus.fromError("%s: could not fetch info: %s" % (username, e))
 
+
 def handle_user_put(req, username):
     try:
         rc = getIncomingJSON(req, 'fullname', 'password')
@@ -180,11 +182,12 @@ def handle_user_put(req, username):
     except pg8000.Error as e:
         return RichStatus.fromError("%s: could not save info: %s" % (username, e))
 
-@app.route('/user/<username>', methods=[ 'PUT', 'GET' ])
+
+@app.route('/user/<username>', methods=['PUT', 'GET'])
 def handle_user(username):
     rc = RichStatus.fromError("impossible error")
     logging.debug("handle_user %s: method %s" % (username, request.method))
-    
+
     try:
         rc = setup()
 
@@ -198,14 +201,17 @@ def handle_user(username):
 
     return jsonify(rc.toDict())
 
+
 @app.route('/user/health')
 def root():
     rc = RichStatus.OK(msg="user health check OK")
 
     return jsonify(rc.toDict())
 
+
 def main():
     app.run(host='0.0.0.0', port=5000, debug=True)
+
 
 if __name__ == '__main__':
     setup()

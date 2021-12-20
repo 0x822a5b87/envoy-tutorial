@@ -5,7 +5,6 @@ metadata:
   labels:
     service: postgres
   name: postgres
-  namespace: envoy-tutorial
 spec:
   type: ClusterIP
   ports:
@@ -13,4 +12,3 @@ spec:
     port: 5432
   selector:
     service: postgres
-
